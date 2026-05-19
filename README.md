@@ -1,2 +1,1 @@
-# prompt-architecture-portfolio
-AI systems built for agencies. Prompt architecture portfolio — Elvis Igbo.
+# Elvis Igbo — AI Problem Solver for Agencies
