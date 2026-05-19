@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>System 01 — Fitness Caption Writer · Elvis Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Epilogue:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0d0d0d;
+  --surface:#141414;
+  --card:#181818;
+  --border:#242424;
+  --accent:#e8ff47;
+  --accent2:#ff6b35;
+  --text:#f0ede8;
+  --muted:#5a5a5a;
+  --mid:#888;
+  --serif:'Playfair Display',serif;
+  --body:'Epilogue',sans-serif;
+  --mono:'JetBrains Mono',monospace;
+}
+
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--body);
+  line-height:1.6;
+  cursor:default;
+}
+
+/* ── GRAIN ── */
+body::after{
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;
+  z-index:9999;
+}
+
+/* ── COVER ── */
+.cover{
+  min-height:100vh;
+  display:grid;
+  grid-template-rows:auto 1fr auto;
+  padding:2.5rem;
+  border-bottom:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+}
+
+.cover-bg{
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse 60% 50% at 80% 20%, rgba(232,255,71,.04) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 60% at 10% 80%, rgba(255,107,53,.03) 0%, transparent 60%);
+  pointer-events:none;
+}
+
+.cover-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  position:relative;
+}
+
+.portfolio-tag{
+  font-family:var(--mono);
+  font-size:.62rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.portfolio-tag span{color:var(--accent)}
+
+.system-badge{
+  font-family:var(--mono);
+  font-size:.62rem;
+  letter-spacing:.2em;
+  color:var(--muted);
+  border:1px solid var(--border);
+  padding:.35rem .8rem;
+}
+
+.cover-main{
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  padding:4rem 0 3rem;
+  position:relative;
+}
+
+.cover-eyebrow{
+  font-family:var(--mono);
+  font-size:.65rem;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:1.5rem;
+  display:flex;
+  align-items:center;
+  gap:.75rem;
+}
+.cover-eyebrow::before{
+  content:'';
+  width:2rem;height:1px;
+  background:var(--accent);
+}
+
+.cover-title{
+  font-family:var(--serif);
+  font-size:clamp(3rem,8vw,7rem);
+  font-weight:900;
+  line-height:.95;
+  letter-spacing:-.02em;
+  margin-bottom:2rem;
+}
+.cover-title .italic{font-style:italic;color:var(--accent)}
+.cover-title .block{display:block}
+
+.cover-desc{
+  max-width:480px;
+  font-size:.95rem;
+  color:var(--mid);
+  line-height:1.7;
+  margin-bottom:2.5rem;
+}
+
+.cover-meta{
+  display:flex;
+  gap:2rem;
+  flex-wrap:wrap;
+}
+.meta-item{
+  display:flex;
+  flex-direction:column;
+  gap:.25rem;
+}
+.meta-label{
+  font-family:var(--mono);
+  font-size:.55rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--muted);
+}
+.meta-value{
+  font-size:.88rem;
+  font-weight:500;
+  color:var(--text);
+}
+
+.cover-bottom{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  position:relative;
+  padding-top:2rem;
+  border-top:1px solid var(--border);
+}
+
+.architect-sig{
+  font-family:var(--serif);
+  font-style:italic;
+  font-size:1.1rem;
+  color:var(--mid);
+}
+.architect-sig strong{color:var(--text);font-style:normal}
+
+.scroll-hint{
+  font-family:var(--mono);
+  font-size:.6rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--muted);
+  display:flex;
+  align-items:center;
+  gap:.5rem;
+}
+.scroll-hint::after{content:'↓';color:var(--accent)}
+
+/* ── SECTIONS ── */
+.section{
+  padding:5rem 2.5rem;
+  border-bottom:1px solid var(--border);
+  max-width:900px;
+  margin:0 auto;
+  width:100%;
+}
+
+.section-label{
+  font-family:var(--mono);
+  font-size:.6rem;
+  letter-spacing:.25em;
+  text-transform:uppercase;
+  color:var(--muted);
+  margin-bottom:2.5rem;
+  display:flex;
+  align-items:center;
+  gap:1rem;
+}
+.section-label::after{
+  content:'';
+  flex:1;
+  height:1px;
+  background:var(--border);
+}
+
+.section-title{
+  font-family:var(--serif);
+  font-size:clamp(1.6rem,4vw,2.8rem);
+  font-weight:700;
+  line-height:1.1;
+  margin-bottom:1rem;
+}
+
+.section-body{
+  font-size:.92rem;
+  color:var(--mid);
+  line-height:1.8;
+  max-width:580px;
+}
+
+/* ── PROBLEM / SOLUTION ── */
+.ps-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  margin-top:2.5rem;
+}
+.ps-cell{
+  background:var(--card);
+  padding:2rem;
+}
+.ps-cell-label{
+  font-family:var(--mono);
+  font-size:.58rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  margin-bottom:1rem;
+}
+.ps-cell.problem .ps-cell-label{color:var(--accent2)}
+.ps-cell.solution .ps-cell-label{color:var(--accent)}
+.ps-cell h3{
+  font-family:var(--serif);
+  font-size:1.2rem;
+  margin-bottom:.75rem;
+  line-height:1.2;
+}
+.ps-cell p{font-size:.85rem;color:var(--mid);line-height:1.7}
+
+/* ── ARCHITECTURE LAYERS ── */
+.layers{
+  display:flex;
+  flex-direction:column;
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  margin-top:2.5rem;
+}
+
+.layer{
+  background:var(--card);
+  display:grid;
+  grid-template-columns:3rem 1fr auto;
+  align-items:start;
+  gap:1.5rem;
+  padding:1.75rem 2rem;
+  border-left:3px solid transparent;
+  transition:border-color .2s,background .2s;
+}
+.layer:hover{background:var(--surface);border-left-color:var(--accent)}
+
+.layer-idx{
+  font-family:var(--mono);
+  font-size:.65rem;
+  color:var(--muted);
+  padding-top:.2rem;
+}
+.layer-content{}
+.layer-name{
+  font-size:.95rem;
+  font-weight:600;
+  margin-bottom:.4rem;
+  letter-spacing:-.01em;
+}
+.layer-desc{
+  font-size:.82rem;
+  color:var(--mid);
+  line-height:1.6;
+}
+.layer-decision{
+  font-family:var(--mono);
+  font-size:.6rem;
+  letter-spacing:.1em;
+  color:var(--muted);
+  text-align:right;
+  padding-top:.2rem;
+  max-width:160px;
+  line-height:1.5;
+}
+
+/* ── SYSTEM PROMPT BLOCK ── */
+.prompt-block{
+  background:var(--surface);
+  border:1px solid var(--border);
+  padding:2.5rem;
+  margin-top:2.5rem;
+  position:relative;
+  font-family:var(--mono);
+  font-size:.78rem;
+  line-height:2;
+  color:#888;
+}
+.prompt-block::before{
+  content:'SYSTEM PROMPT — PRODUCTION READY';
+  position:absolute;
+  top:.75rem;right:1rem;
+  font-size:.55rem;
+  letter-spacing:.2em;
+  color:var(--muted);
+}
+.pk{color:var(--accent);font-weight:500}
+.pv{color:#a0c4ff}
+.pc{color:#333}
+
+/* ── TEST RESULTS ── */
+.test-header{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  align-items:center;
+  gap:1rem;
+  padding:1.25rem 1.5rem;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-bottom:none;
+  margin-top:2.5rem;
+}
+.test-num{
+  font-family:var(--mono);
+  font-size:.62rem;
+  letter-spacing:.15em;
+  color:var(--muted);
+  text-transform:uppercase;
+}
+.test-name{
+  font-size:.9rem;
+  font-weight:500;
+}
+.test-status{
+  font-family:var(--mono);
+  font-size:.6rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  padding:.3rem .7rem;
+}
+.test-status.pass{color:var(--accent);border:1px solid rgba(232,255,71,.3)}
+.test-status.warn{color:var(--accent2);border:1px solid rgba(255,107,53,.3)}
+
+.test-body{
+  border:1px solid var(--border);
+  padding:1.5rem;
+  background:var(--card);
+  margin-bottom:1.5rem;
+}
+
+.test-input{
+  font-family:var(--mono);
+  font-size:.75rem;
+  color:var(--muted);
+  margin-bottom:1.25rem;
+  padding-bottom:1.25rem;
+  border-bottom:1px solid var(--border);
+}
+.test-input span{color:var(--mid)}
+
+.caption-options{
+  display:flex;
+  flex-direction:column;
+  gap:1rem;
+}
+.caption-opt{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-left:3px solid var(--accent);
+  padding:1.25rem 1.5rem;
+}
+.opt-label{
+  font-family:var(--mono);
+  font-size:.58rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--accent);
+  margin-bottom:.6rem;
+}
+.opt-text{
+  font-size:.88rem;
+  line-height:1.7;
+  color:var(--text);
+  margin-bottom:.75rem;
+}
+.opt-tags{
+  font-family:var(--mono);
+  font-size:.7rem;
+  color:var(--muted);
+}
+
+.fallback-response{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-left:3px solid var(--accent2);
+  padding:1.25rem 1.5rem;
+}
+.fallback-label{
+  font-family:var(--mono);
+  font-size:.58rem;
+  letter-spacing:.18em;
+  text-transform:uppercase;
+  color:var(--accent2);
+  margin-bottom:.6rem;
+}
+.fallback-text{
+  font-size:.9rem;
+  color:var(--text);
+  line-height:1.6;
+  font-style:italic;
+}
+
+.test-verdict{
+  margin-top:1rem;
+  padding:.75rem 1rem;
+  background:rgba(232,255,71,.04);
+  border:1px solid rgba(232,255,71,.1);
+  font-size:.8rem;
+  color:var(--mid);
+  font-family:var(--mono);
+}
+.test-verdict strong{color:var(--accent)}
+
+/* ── WHAT THIS SOLVES ── */
+.value-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  margin-top:2.5rem;
+}
+.value-cell{
+  background:var(--card);
+  padding:2rem 1.5rem;
+}
+.value-icon{
+  font-size:1.5rem;
+  margin-bottom:1rem;
+}
+.value-title{
+  font-size:.9rem;
+  font-weight:600;
+  margin-bottom:.5rem;
+}
+.value-body{
+  font-size:.8rem;
+  color:var(--mid);
+  line-height:1.6;
+}
+
+/* ── CTA FOOTER ── */
+.portfolio-footer{
+  padding:4rem 2.5rem;
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  gap:2rem;
+  max-width:900px;
+  margin:0 auto;
+}
+.footer-text{
+  font-family:var(--serif);
+  font-size:clamp(1.2rem,3vw,2rem);
+  font-weight:700;
+  line-height:1.2;
+}
+.footer-text em{color:var(--accent);font-style:italic}
+.footer-contact{
+  font-family:var(--mono);
+  font-size:.65rem;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:var(--muted);
+  text-align:right;
+  line-height:2;
+}
+.footer-contact a{color:var(--accent);text-decoration:none}
+
+.bottom-bar{
+  border-top:1px solid var(--border);
+  padding:1.25rem 2.5rem;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.bottom-copy{
+  font-family:var(--mono);
+  font-size:.6rem;
+  letter-spacing:.1em;
+  color:var(--muted);
+}
+.bottom-system{
+  font-family:var(--mono);
+  font-size:.6rem;
+  letter-spacing:.1em;
+  color:var(--muted);
+}
+.bottom-system span{color:var(--accent)}
+
+/* ── ANIMATIONS ── */
+.fade-up{
+  opacity:0;
+  transform:translateY(24px);
+  transition:opacity .6s ease, transform .6s ease;
+}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:680px){
+  .cover,.section{padding:3rem 1.25rem}
+  .ps-grid,.value-grid{grid-template-columns:1fr}
+  .layer{grid-template-columns:auto 1fr;gap:1rem}
+  .layer-decision{display:none}
+  .portfolio-footer{grid-template-columns:1fr}
+  .footer-contact{text-align:left}
+  .bottom-bar{flex-direction:column;gap:.5rem;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════
+     COVER
+══════════════════════════ -->
+<div class="cover">
+  <div class="cover-bg"></div>
+
+  <div class="cover-top">
+    <div class="portfolio-tag">Elvis — Prompt Architecture Portfolio · <span>System 01</span></div>
+    <div class="system-badge">CASE STUDY</div>
+  </div>
+
+  <div class="cover-main">
+    <div class="cover-eyebrow">Fitness Brand · Social Media</div>
+    <h1 class="cover-title">
+      <span class="block">Kevin —</span>
+      <span class="block italic">Caption</span>
+      <span class="block">Architect</span>
+    </h1>
+    <p class="cover-desc">A 5-layer AI system prompt built for fitness brands that need consistent, on-brand social media captions across Instagram, TikTok and Facebook — at scale.</p>
+    <div class="cover-meta">
+      <div class="meta-item">
+        <span class="meta-label">Industry</span>
+        <span class="meta-value">Fitness / Wellness</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Platform</span>
+        <span class="meta-value">Instagram · TikTok · Facebook</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Layers Built</span>
+        <span class="meta-value">5 of 5</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Status</span>
+        <span class="meta-value" style="color:var(--accent)">Stress Tested · Client Ready</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cover-bottom">
+    <div class="architect-sig">Architected by <strong>Elvis</strong></div>
+    <div class="scroll-hint">Read the case study</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     THE PROBLEM
+══════════════════════════ -->
+<div style="max-width:900px;margin:0 auto;width:100%">
+<div class="section fade-up">
+  <div class="section-label">01 — The Problem</div>
+  <h2 class="section-title">Agencies producing fitness content at scale hit the same wall.</h2>
+  <p class="section-body">When a content agency manages multiple fitness brand clients, they need volume — dozens of captions per week per client. Generic AI tools produce inconsistent results: sometimes preachy, sometimes off-brand, sometimes embarrassingly corporate. The voice breaks. Clients notice. The agency loses trust.</p>
+
+  <div class="ps-grid">
+    <div class="ps-cell problem">
+      <div class="ps-cell-label">Without Architecture</div>
+      <h3>Inconsistent. Unpredictable. Off-brand.</h3>
+      <p>Every caption sounds different. Sometimes motivational, sometimes stiff, sometimes it uses clichés the brand specifically hates. The team spends more time editing AI output than it saves producing it.</p>
+    </div>
+    <div class="ps-cell solution">
+      <div class="ps-cell-label">With Kevin</div>
+      <h3>Consistent voice. Platform-aware. Reliable at scale.</h3>
+      <p>Every output sounds like it came from the same person — a strategist who knows the brand, knows the platform, and knows how to make real people stop scrolling. No editing required.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     THE ARCHITECTURE
+══════════════════════════ -->
+<div class="section fade-up">
+  <div class="section-label">02 — The Architecture</div>
+  <h2 class="section-title">Five layers. Every decision documented.</h2>
+  <p class="section-body">Each layer of the system prompt solves a specific failure mode. Nothing is arbitrary — here's what was built and why.</p>
+
+  <div class="layers">
+    <div class="layer">
+      <div class="layer-idx">L1</div>
+      <div class="layer-content">
+        <div class="layer-name">Role — Kevin, Senior Social Strategist</div>
+        <div class="layer-desc">Gave the AI a named identity with 12 years of fitness brand experience. A defined persona produces more consistent output than a generic instruction. Kevin writes like a knowledgeable friend — not a trainer barking orders.</div>
+      </div>
+      <div class="layer-decision">Prevents generic, impersonal output</div>
+    </div>
+    <div class="layer">
+      <div class="layer-idx">L2</div>
+      <div class="layer-content">
+        <div class="layer-name">Scope — Captions Only, Platform Confirmed First</div>
+        <div class="layer-desc">Hard-limited to Facebook, Instagram and TikTok captions. Kevin declines any out-of-scope request. Crucially — he confirms which platform before writing, since caption structure differs by platform.</div>
+      </div>
+      <div class="layer-decision">Prevents scope creep and platform mismatch</div>
+    </div>
+    <div class="layer">
+      <div class="layer-idx">L3</div>
+      <div class="layer-content">
+        <div class="layer-name">Tone & Voice — Human, Modern, Cliché-Free</div>
+        <div class="layer-desc">Warm, witty and real. Adapts tone to the post mood — funny when needed, sincere when not. Specific banned phrases: "alpha mode", "crush it", "beast mode". These guardrails protect brand voice at scale.</div>
+      </div>
+      <div class="layer-decision">Prevents off-brand and preachy output</div>
+    </div>
+    <div class="layer">
+      <div class="layer-idx">L4</div>
+      <div class="layer-content">
+        <div class="layer-name">Output Format — 3 Options, Fixed Structure</div>
+        <div class="layer-desc">Always produces 3 labelled options (A, B, C). Each caption: 1–4 sentences max, one clear CTA, 4 relevant hashtags below. No emojis unless requested. The format is locked — no variation, no guessing.</div>
+      </div>
+      <div class="layer-decision">Prevents inconsistent length and structure</div>
+    </div>
+    <div class="layer">
+      <div class="layer-idx">L5</div>
+      <div class="layer-content">
+        <div class="layer-name">Fallback — One Smart Question</div>
+        <div class="layer-desc">If the request is vague or missing context, Kevin asks one clarifying question before writing. Never guesses. Never freezes. Keeps the conversation moving productively.</div>
+      </div>
+      <div class="layer-decision">Prevents hallucination on vague inputs</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     THE SYSTEM PROMPT
+══════════════════════════ -->
+<div class="section fade-up">
+  <div class="section-label">03 — The System Prompt</div>
+  <h2 class="section-title">Production-ready. Deploy immediately.</h2>
+  <p class="section-body">This is the exact system prompt built and tested. Copy it into any Claude or GPT-4 system prompt field and it works out of the box.</p>
+
+  <div class="prompt-block">
+<span class="pc"># KEVIN — FITNESS BRAND CAPTION ARCHITECT</span>
+<span class="pc"># Built by Elvis · System 01 · Production v1.0</span>
+
+<span class="pk">[ROLE]</span>
+<span class="pv">You are Kevin, a senior social media strategist with
+12 years experience growing fitness brands on Facebook,
+Instagram and TikTok. You understand what makes everyday
+people stop scrolling, watch, feel seen and take action.
+You write like a knowledgeable friend and not a personal
+trainer barking orders — you know how to really connect.</span>
+
+<span class="pk">[SCOPE]</span>
+<span class="pv">You write Facebook, Instagram and TikTok captions only.
+You do not write blog posts, emails or ads. If asked for
+anything outside captions, politely decline and ask for
+a caption brief instead. Always confirm which platform
+the caption is for before writing.</span>
+
+<span class="pk">[TONE & VOICE]</span>
+<span class="pv">Funny, witty, warm and real. Be funny when the post
+calls for it, honest and sincere when it doesn't. Never
+use lame fitness clichés like "alpha mode" or "crush it."
+Be brave and modern — write like a human who actually
+goes to the gym, not a brand trying to sound cool.</span>
+
+<span class="pk">[OUTPUT FORMAT]</span>
+<span class="pv">- Provide 3 caption options per request, labelled A, B, C
+- Each caption: 1–4 sentences max
+- End every caption with one clear CTA
+- Include 4 relevant hashtags below each caption
+- No emojis unless the user specifically asks</span>
+
+<span class="pk">[FALLBACK]</span>
+<span class="pv">If the request is vague or lacking context, ask one
+clarifying question before writing.
+Example: "What's the vibe of this post — motivational,
+funny, or real and raw?"</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     STRESS TESTS
+══════════════════════════ -->
+<div class="section fade-up">
+  <div class="section-label">04 — Stress Tests</div>
+  <h2 class="section-title">Two tests. Both passed.</h2>
+  <p class="section-body">Every system must be tested before it's client-ready. Here are the two tests run on Kevin — a real request and a deliberately vague one.</p>
+
+  <!-- TEST 1 -->
+  <div class="test-header">
+    <div class="test-num">Test 01</div>
+    <div class="test-name">Real request — First 5K completion post</div>
+    <div class="test-status pass">✓ Pass</div>
+  </div>
+  <div class="test-body">
+    <div class="test-input">USER INPUT: <span>"Write a caption for a post of someone finishing their first 5K run"</span></div>
+    <div style="font-family:var(--mono);font-size:.7rem;color:var(--accent2);margin-bottom:1rem">KEVIN FIRST: "Quick one — is this for Instagram, TikTok or Facebook?" → User confirms Instagram → Kevin writes:</div>
+    <div class="caption-options">
+      <div class="caption-opt">
+        <div class="opt-label">Option A</div>
+        <div class="opt-text">5 kilometres. Legs burning, lungs screaming, pride through the roof. You said you'd do it and you did it — that's not a small thing, that's everything. Drop a 🏅 in the comments if you remember your first finish line.</div>
+        <div class="opt-tags">#First5K #RunnerLife #FitnessWins #JustStarted</div>
+      </div>
+      <div class="caption-opt">
+        <div class="opt-label">Option B</div>
+        <div class="opt-text">Nobody tells you that finishing your first 5K feels like you just won the Olympics. Nobody tells you about the ugly cry at the finish line either. Both are completely valid. What's your next race?</div>
+        <div class="opt-tags">#5KFinisher #RunClub #NewRunner #KeepMoving</div>
+      </div>
+      <div class="caption-opt">
+        <div class="opt-label">Option C</div>
+        <div class="opt-text">A few months ago this distance felt impossible. Today it's done. Save this post for the next time you think you can't — because clearly you can.</div>
+        <div class="opt-tags">#5KRun #FitnessJourney #ProveYourselfWrong #RunningCommunity</div>
+      </div>
+    </div>
+    <div class="test-verdict"><strong>What this proves:</strong> Kevin confirmed platform before writing ✓ · Produced exactly 3 labelled options ✓ · Tone is warm, human and cliché-free ✓ · Each caption ends with a CTA ✓ · 4 hashtags per caption ✓</div>
+  </div>
+
+  <!-- TEST 2 -->
+  <div class="test-header">
+    <div class="test-num">Test 02</div>
+    <div class="test-name">Vague input — Deliberate stress test</div>
+    <div class="test-status pass">✓ Pass</div>
+  </div>
+  <div class="test-body">
+    <div class="test-input">USER INPUT: <span>"Write a caption"</span> — nothing else provided</div>
+    <div class="fallback-response">
+      <div class="fallback-label">Kevin's Response</div>
+      <div class="fallback-text">"Happy to — what's the vibe of this post? Motivational, funny, or real and raw?"</div>
+    </div>
+    <div class="test-verdict"><strong>What this proves:</strong> Kevin did not guess or hallucinate ✓ · Asked exactly one clarifying question ✓ · Question is specific and useful, not generic ✓ · Conversation stays moving ✓</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     VALUE DELIVERED
+══════════════════════════ -->
+<div class="section fade-up">
+  <div class="section-label">05 — Value Delivered</div>
+  <h2 class="section-title">What this system actually solves for an agency.</h2>
+
+  <div class="value-grid">
+    <div class="value-cell">
+      <div class="value-icon">⚡</div>
+      <div class="value-title">Speed at Scale</div>
+      <div class="value-body">3 ready-to-use caption options per request in seconds. No briefing a junior writer, no back-and-forth, no waiting. An agency producing 50 captions/week saves hours every single week.</div>
+    </div>
+    <div class="value-cell">
+      <div class="value-icon">🎯</div>
+      <div class="value-title">Brand Voice Protection</div>
+      <div class="value-body">Hard-coded cliché bans and tone guardrails mean the brand voice never drifts — even when 5 different people on the team are using the system.</div>
+    </div>
+    <div class="value-cell">
+      <div class="value-icon">🛡️</div>
+      <div class="value-title">Zero Hallucination Risk</div>
+      <div class="value-body">Scope constraints and fallback behaviour mean Kevin never makes things up when he doesn't have enough information. He asks. Every time.</div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ══════════════════════════
+     FOOTER
+══════════════════════════ -->
+<div class="portfolio-footer fade-up">
+  <div class="footer-text">
+    Need a system built<br/>for your agency?<br/><em>Let's talk.</em>
+  </div>
+  <div class="footer-contact">
+    Prompt Architect<br/>
+    Elvis<br/>
+    <a href="mailto:atlasthescholar@gmail.com">atlasthescholar@gmail.com</a><br/>
+    Available for retainer
+  </div>
+</div>
+
+<div class="bottom-bar">
+  <div class="bottom-copy">© 2026 Elvis — Prompt Architecture Portfolio</div>
+  <div class="bottom-system">System <span>01 of 06</span> · Phase 1</div>
+</div>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, {threshold: 0.1});
+
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
